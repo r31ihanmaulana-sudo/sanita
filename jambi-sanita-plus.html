@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Jambi Sanita+ — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root {
+  --green: #1a5c2e;
+  --green-mid: #2d7d46;
+  --green-light: #e8f5ed;
+  --green-pale: #f2f9f4;
+  --amber: #e07b00;
+  --amber-light: #fff4e0;
+  --amber-mid: #f5c26b;
+  --red: #d93025;
+  --red-light: #fce8e6;
+  --blue: #1a6cc4;
+  --blue-light: #e8f1ff;
+  --teal: #0f7b6c;
+  --teal-light: #e0f5f2;
+  --text: #1a1a1a;
+  --text-muted: #5f6b7a;
+  --text-hint: #9ca3af;
+  --bg: #f4f7f4;
+  --surface: #ffffff;
+  --border: rgba(0,0,0,0.08);
+  --border-med: rgba(0,0,0,0.14);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --font: 'Plus Jakarta Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { min-height: 100%; background: #c8d8c8; font-family: var(--font); }
+
+.stage { display: flex; align-items: flex-start; justify-content: center; min-height: 100vh; padding: 24px 16px; gap: 32px; flex-wrap: wrap; }
+.column { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.col-label { font-size: 12px; font-weight: 700; color: #fff; letter-spacing: 1px; opacity: 0.7; }
+
+.phone {
+  width: 375px; background: var(--bg);
+  border-radius: 44px; border: 3px solid #a8bfa8;
+  overflow: hidden; position: relative;
+  box-shadow: 0 32px 64px rgba(0,0,0,0.22), 0 0 0 1px rgba(255,255,255,0.4);
+  height: 800px; display: flex; flex-direction: column;
+}
+
+.statusbar { background: var(--green); padding: 10px 20px 6px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.statusbar-time { color: #fff; font-size: 13px; font-weight: 700; }
+.statusbar-icons { display: flex; gap: 5px; align-items: center; color: #fff; font-size: 13px; }
+
+.screen { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+.screen.active { display: flex; }
+.scroll { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.scroll::-webkit-scrollbar { display: none; }
+
+.topbar { background: var(--green); padding: 12px 18px 14px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.topbar-title { color: #fff; font-size: 15px; font-weight: 700; flex: 1; }
+.topbar-icon { color: rgba(255,255,255,0.85); font-size: 20px; cursor: pointer; }
+
+.bottomnav { background: var(--surface); border-top: 0.5px solid var(--border); display: flex; padding: 10px 0 14px; flex-shrink: 0; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; color: var(--text-muted); cursor: pointer; transition: color 0.2s; }
+.nav-item i { font-size: 21px; }
+.nav-item.active { color: var(--green); }
+
+.card { background: var(--surface); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 14px; }
+.card-title { font-size: 13px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 7px; margin-bottom: 12px; }
+.card-title i { color: var(--green); font-size: 16px; }
+.card-title .see-all { font-size: 11px; color: var(--green); margin-left: auto; cursor: pointer; font-weight: 600; }
+
+.btn-primary { background: var(--green); color: #fff; border: none; border-radius: var(--radius-sm); width: 100%; padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: var(--font); display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.15s, transform 0.1s; }
+.btn-primary:active { opacity: 0.85; transform: scale(0.98); }
+.btn-amber { background: var(--amber); color: #fff; border: none; border-radius: var(--radius-sm); padding: 10px 18px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--font); display: flex; align-items: center; justify-content: center; gap: 8px; }
+.btn-outline { background: transparent; color: var(--green); border: 1.5px solid var(--green); border-radius: var(--radius-sm); padding: 10px 16px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: var(--font); }
+
+/* ===== HEADER HOME ===== */
+.header-home { background: var(--green); padding: 14px 18px 18px; }
+.header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.logo-text { color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+.logo-text span { color: var(--amber-mid); }
+.logo-sub { color: rgba(255,255,255,0.55); font-size: 10px; letter-spacing: 1px; margin-top: 1px; }
+.header-icons { display: flex; gap: 8px; }
+.hdr-icon-btn { width: 34px; height: 34px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+.hdr-icon-btn i { color: #fff; font-size: 18px; }
+.notif-badge { position: absolute; top: -2px; right: -2px; background: #ff4d4d; color: #fff; font-size: 9px; width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+.greet-label { color: rgba(255,255,255,0.7); font-size: 12px; }
+.greet-name { color: #fff; font-size: 16px; font-weight: 700; margin-top: 2px; display: flex; align-items: center; gap: 8px; }
+.mode-badge { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; cursor: pointer; }
+.mode-badge.institusi { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+.mode-badge.pelanggan { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+
+/* ===== INSTITUSI HOME ===== */
+.ops-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.ops-item { background: var(--bg); border-radius: 10px; padding: 10px 6px; text-align: center; }
+.ops-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 6px; font-size: 18px; }
+.ops-icon.green { background: var(--green-light); color: var(--green); }
+.ops-icon.blue { background: var(--blue-light); color: var(--blue); }
+.ops-icon.amber { background: var(--amber-light); color: var(--amber); }
+.ops-icon.teal { background: var(--teal-light); color: var(--teal); }
+.ops-val { font-size: 16px; font-weight: 800; color: var(--text); }
+.ops-label { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
+
+.fleet-stat-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.fleet-stat { flex: 1; background: var(--bg); border-radius: 10px; padding: 10px 8px; text-align: center; }
+.fleet-stat-val { font-size: 20px; font-weight: 800; color: var(--green); }
+.fleet-stat-label { font-size: 10px; color: var(--text-muted); }
+
+.map-placeholder { background: #d8e8d0; border-radius: 10px; height: 130px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.map-bg { position: absolute; inset: 0; background: linear-gradient(145deg,#c8dfc0 0%,#d8e8d0 40%,#e0eed8 100%); }
+.map-road-h { position: absolute; top: 50%; left: 0; right: 0; height: 3px; background: rgba(255,255,255,0.6); transform: translateY(-50%); }
+.map-road-v { position: absolute; left: 40%; top: 0; bottom: 0; width: 3px; background: rgba(255,255,255,0.6); }
+.map-road-d { position: absolute; top: 20%; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.4); transform: rotate(-8deg); }
+.truck-dot { position: absolute; width: 24px; height: 24px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+.truck-dot i { color: #fff; font-size: 11px; }
+.truck-dot.amber { background: var(--amber); }
+.truck-dot.gray { background: #888; }
+.map-legend { position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.9); border-radius: 8px; padding: 6px 8px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 9px; color: var(--text-muted); margin-bottom: 2px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+.ipal-row { display: flex; gap: 10px; margin-bottom: 10px; }
+.ipal-stat { flex: 1; }
+.ipal-stat-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+.ipal-stat-val { font-size: 20px; font-weight: 800; color: var(--green); }
+.ipal-stat-unit { font-size: 11px; color: var(--text-muted); }
+.progress-bar-bg { height: 8px; background: var(--bg); border-radius: 4px; flex: 1; }
+.progress-bar-fill { height: 8px; background: var(--green); border-radius: 4px; }
+.effluen-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-top: 10px; }
+.eff-item { background: var(--bg); border-radius: 8px; padding: 8px 4px; text-align: center; }
+.eff-label { font-size: 9px; color: var(--text-muted); }
+.eff-sub { font-size: 9px; color: var(--text-hint); }
+.eff-val { font-size: 14px; font-weight: 800; color: var(--text); }
+.eff-status { font-size: 9px; font-weight: 700; margin-top: 2px; color: var(--green); }
+
+.report-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.rep-item { background: var(--bg); border-radius: 10px; padding: 10px 6px; text-align: center; }
+.rep-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; font-size: 16px; }
+.rep-val { font-size: 18px; font-weight: 800; color: var(--text); }
+.rep-label { font-size: 9px; color: var(--text-muted); }
+
+.activity-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--border); }
+.activity-item:last-child { border-bottom: none; }
+.act-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.act-text { flex: 1; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+.act-time { font-size: 11px; color: var(--text-hint); white-space: nowrap; }
+
+.promo-card-green { background: var(--green); border-radius: var(--radius); padding: 16px; display: flex; align-items: center; gap: 12px; position: relative; overflow: hidden; }
+.promo-card-green::after { content: ''; position: absolute; right: -20px; bottom: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.06); }
+.promo-text-white .title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.promo-text-white .sub { font-size: 11px; color: rgba(255,255,255,0.75); }
+
+/* ===== PELANGGAN HOME ===== */
+.layanan-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+.lay-card { border-radius: var(--radius); border: 0.5px solid var(--border); padding: 14px; cursor: pointer; transition: transform 0.15s; }
+.lay-card:active { transform: scale(0.97); }
+.lay-card.green { background: var(--green-pale); }
+.lay-card.blue { background: #eef5ff; }
+.lay-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 8px; }
+.lay-icon.green { background: var(--green-light); color: var(--green); }
+.lay-icon.blue { background: var(--blue-light); color: var(--blue); }
+.lay-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.lay-desc { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
+
+.reminder-card { background: var(--amber-light); border-radius: var(--radius); border: 0.5px solid var(--amber-mid); padding: 12px 14px; position: relative; }
+.reminder-close { position: absolute; top: 10px; right: 10px; color: var(--text-hint); cursor: pointer; font-size: 16px; }
+.reminder-title { font-size: 12px; font-weight: 700; color: var(--amber); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.reminder-date { font-size: 13px; font-weight: 800; color: var(--text); }
+.reminder-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+.hist-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--border); cursor: pointer; }
+.hist-item:last-child { border-bottom: none; }
+.hist-icon-box { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.hist-icon-box.green { background: var(--green-light); color: var(--green); }
+.hist-icon-box.blue { background: var(--blue-light); color: var(--blue); }
+.hist-title { font-size: 12px; font-weight: 700; color: var(--text); }
+.hist-sub { font-size: 11px; color: var(--text-muted); }
+.hist-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.hist-badge.success { background: var(--green-light); color: var(--green); }
+.hist-amount { font-size: 13px; font-weight: 700; color: var(--text); }
+
+.tagihan-hero-pel { background: var(--green); padding: 0 18px 20px; }
+.tag-label { color: rgba(255,255,255,0.7); font-size: 11px; margin-bottom: 4px; }
+.tag-amount { color: #fff; font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+.tag-status-badge { background: #ff6b35; color: #fff; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; display: inline-block; }
+.tag-info-row { display: flex; justify-content: space-between; margin-top: 12px; }
+.tag-info-item { }
+.tag-info-label { color: rgba(255,255,255,0.65); font-size: 10px; }
+.tag-info-val { color: #fff; font-size: 12px; font-weight: 700; }
+
+.bar-chart-green { display: flex; align-items: flex-end; gap: 6px; height: 80px; }
+.bar-g { flex: 1; border-radius: 4px 4px 0 0; }
+.bar-g.active { background: var(--green); }
+.bar-g.inactive { background: #b8d8c0; }
+.bar-label { font-size: 9px; color: var(--text-muted); text-align: center; margin-top: 4px; }
+
+.cs-card { background: var(--green-light); border-radius: var(--radius); border: 0.5px solid #b8d8c0; padding: 14px; display: flex; align-items: center; gap: 12px; }
+.cs-text .title { font-size: 13px; font-weight: 700; color: var(--green); margin-bottom: 3px; }
+.cs-text .sub { font-size: 11px; color: var(--text-muted); }
+
+/* ===== HALAMAN ARMADA ===== */
+.armada-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--border); cursor: pointer; }
+.armada-item:last-child { border-bottom: none; }
+.armada-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.armada-icon.green { background: var(--green-light); color: var(--green); }
+.armada-icon.amber { background: var(--amber-light); color: var(--amber); }
+.armada-icon.gray { background: #f0f0f0; color: #888; }
+.armada-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.armada-sub { font-size: 11px; color: var(--text-muted); }
+.armada-status { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+.armada-status.aktif { background: var(--green-light); color: var(--green); }
+.armada-status.bertugas { background: var(--amber-light); color: var(--amber); }
+.armada-status.standby { background: #f0f0f0; color: #888; }
+
+/* ===== HALAMAN JADWAL ===== */
+.jadwal-card { background: var(--surface); border-radius: var(--radius); border: 0.5px solid var(--border); overflow: hidden; margin-bottom: 0; }
+.jadwal-header { background: var(--green); padding: 12px 14px; }
+.jadwal-tanggal { color: #fff; font-size: 16px; font-weight: 800; }
+.jadwal-hari { color: rgba(255,255,255,0.75); font-size: 12px; }
+.jadwal-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 0.5px solid var(--border); }
+.jadwal-item:last-child { border-bottom: none; }
+.jadwal-time { font-size: 12px; font-weight: 700; color: var(--green); width: 48px; flex-shrink: 0; }
+.jadwal-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.jadwal-name { font-size: 12px; font-weight: 600; color: var(--text); }
+.jadwal-addr { font-size: 11px; color: var(--text-muted); }
+.jadwal-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-left: auto; white-space: nowrap; }
+.jadwal-badge.done { background: var(--green-light); color: var(--green); }
+.jadwal-badge.upcoming { background: var(--amber-light); color: var(--amber); }
+
+/* ===== AKUN ===== */
+.profile-hdr { background: var(--green); padding: 20px 18px 24px; display: flex; align-items: center; gap: 14px; }
+.profile-av { width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.profile-av i { color: #fff; font-size: 28px; }
+.profile-name { color: #fff; font-size: 17px; font-weight: 800; }
+.profile-sub { color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 2px; }
+.menu-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--border); cursor: pointer; transition: opacity 0.15s; }
+.menu-row:last-child { border-bottom: none; }
+.menu-row:active { opacity: 0.6; }
+.menu-row-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.menu-row-icon.green { background: var(--green-light); color: var(--green); }
+.menu-row-icon.amber { background: var(--amber-light); color: var(--amber); }
+.menu-row-icon.red { background: var(--red-light); color: var(--red); }
+.menu-row-icon.blue { background: var(--blue-light); color: var(--blue); }
+.menu-row-label { flex: 1; font-size: 13px; font-weight: 600; color: var(--text); }
+.menu-row-sub { font-size: 11px; color: var(--text-muted); }
+
+/* MODAL */
+.modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: flex-end; z-index: 100; }
+.modal-overlay.show { display: flex; }
+.modal-sheet { background: var(--surface); width: 100%; border-radius: 20px 20px 0 0; padding: 16px; animation: slideUp 0.3s ease; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-handle { width: 36px; height: 4px; background: var(--border-med); border-radius: 2px; margin: 0 auto 14px; }
+.modal-title { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 14px; }
+.pay-method { display: flex; align-items: center; gap: 12px; padding: 12px; border: 0.5px solid var(--border); border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.2s; }
+.pay-method.selected { border-color: var(--green); background: var(--green-pale); }
+.pay-method-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--green-light); display: flex; align-items: center; justify-content: center; color: var(--green); font-size: 18px; }
+.pay-method-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.pay-method-desc { font-size: 11px; color: var(--text-muted); }
+.pay-check { margin-left: auto; color: var(--green); font-size: 18px; display: none; }
+.pay-method.selected .pay-check { display: block; }
+
+/* NOTIF PANEL */
+.notif-panel { position: absolute; inset: 0; background: var(--bg); z-index: 50; display: none; flex-direction: column; }
+.notif-panel.show { display: flex; }
+.notif-item { display: flex; gap: 10px; padding: 12px; border-bottom: 0.5px solid var(--border); }
+.notif-dot-s { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; margin-top: 5px; }
+.notif-dot-s.read { background: var(--border-med); }
+.notif-msg-title { font-size: 12px; font-weight: 700; color: var(--text); }
+.notif-msg-body { font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+.notif-time { font-size: 10px; color: var(--text-hint); margin-top: 3px; }
+
+/* SUCCESS */
+.success-screen { position: absolute; inset: 0; background: var(--surface); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 200; gap: 12px; padding: 32px; }
+.success-screen.show { display: flex; }
+.success-icon { width: 72px; height: 72px; background: var(--green-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.success-icon i { color: var(--green); font-size: 36px; }
+
+/* TOAST */
+.toast { position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a1a; color: #fff; font-size: 12px; font-weight: 600; padding: 10px 18px; border-radius: 30px; white-space: nowrap; opacity: 0; transition: all 0.3s; z-index: 999; pointer-events: none; max-width: 90%; text-align: center; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="stage">
+
+<!-- ========== INSTITUSI COLUMN ========== -->
+<div class="column">
+  <div class="col-label">MODE INSTITUSI</div>
+  <div class="phone" id="phone-ins">
+
+    <div class="statusbar">
+      <span class="statusbar-time" id="clock-ins">9:41</span>
+      <div class="statusbar-icons"><i class="ti ti-signal-4g"></i><i class="ti ti-wifi"></i><i class="ti ti-battery-2"></i></div>
+    </div>
+
+    <!-- HOME INSTITUSI -->
+    <div class="screen active" id="ins-home">
+      <div class="header-home">
+        <div class="header-top">
+          <div><div class="logo-text">JAMBI <span>SANITA+</span></div><div class="logo-sub">+ Solusi Sanitasi Kota Modern +</div></div>
+          <div class="header-icons">
+            <div class="hdr-icon-btn" onclick="showNotifIns()"><i class="ti ti-bell"></i><span class="notif-badge">2</span></div>
+            <div class="hdr-icon-btn" onclick="showToastIns('Halaman institusi')"><i class="ti ti-building"></i></div>
+          </div>
+        </div>
+        <div class="greet-label">Selamat pagi,</div>
+        <div class="greet-name">Dinas Lingkungan Hidup Kota Jambi
+          <span class="mode-badge institusi"><i class="ti ti-building" style="font-size:10px"></i> Institusi</span>
+        </div>
+      </div>
+      <div class="scroll">
+        <div class="card">
+          <div class="card-title">Ringkasan Operasional Hari Ini</div>
+          <div class="ops-grid">
+            <div class="ops-item"><div class="ops-icon green"><i class="ti ti-truck"></i></div><div class="ops-val">18/25</div><div class="ops-label">Armada Aktif</div></div>
+            <div class="ops-item"><div class="ops-icon blue"><i class="ti ti-droplet"></i></div><div class="ops-val">7/9</div><div class="ops-label">IPAL Aktif</div></div>
+            <div class="ops-item"><div class="ops-icon amber"><i class="ti ti-file-text"></i></div><div class="ops-val">12</div><div class="ops-label">Laporan Baru</div></div>
+            <div class="ops-item"><div class="ops-icon teal"><i class="ti ti-circle-check"></i></div><div class="ops-val">5</div><div class="ops-label">Tindak Lanjut</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-truck"></i> Armada Truk Tinja <span class="see-all" onclick="goIns('armada')">Lihat Semua ›</span></div>
+          <div class="fleet-stat-row">
+            <div class="fleet-stat"><div class="fleet-stat-val">18</div><div class="fleet-stat-label">Truk Aktif</div></div>
+            <div class="fleet-stat"><div class="fleet-stat-val">12</div><div class="fleet-stat-label">Sedang Bertugas</div></div>
+            <div class="fleet-stat"><div class="fleet-stat-val">26</div><div class="fleet-stat-label">Selesai Hari Ini</div></div>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:6px">Peta Armada (Real-time)</div>
+          <div class="map-placeholder">
+            <div class="map-bg"></div>
+            <div class="map-road-h"></div><div class="map-road-v"></div><div class="map-road-d"></div>
+            <div class="truck-dot" style="top:30%;left:18%"><i class="ti ti-truck"></i></div>
+            <div class="truck-dot" style="top:55%;left:50%"><i class="ti ti-truck"></i></div>
+            <div class="truck-dot amber" style="top:25%;left:65%"><i class="ti ti-truck"></i></div>
+            <div class="truck-dot gray" style="top:65%;left:75%"><i class="ti ti-truck"></i></div>
+            <div class="truck-dot" style="top:70%;left:28%"><i class="ti ti-truck"></i></div>
+            <div style="position:absolute;top:48%;left:38%;width:14px;height:14px;border-radius:50%;background:#185FA5;border:3px solid rgba(24,95,165,0.3)"></div>
+            <div class="map-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Bergerak</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Tugas</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#888"></div>Standby</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-droplet"></i> IPAL <span class="see-all" onclick="goIns('ipal')">Lihat Semua ›</span></div>
+          <div class="ipal-row">
+            <div class="ipal-stat"><div class="ipal-stat-label">IPAL Aktif</div><div class="ipal-stat-val">7 <span class="ipal-stat-unit">/ 9 Unit</span></div></div>
+            <div class="ipal-stat"><div class="ipal-stat-label">Kapasitas Terpakai</div><div class="ipal-stat-val">68<span class="ipal-stat-unit">%</span></div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="progress-bar-bg" style="flex:1"><div class="progress-bar-fill" style="width:68%"></div></div>
+            <span style="font-size:12px;font-weight:700;color:var(--green)">68%</span>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:8px;margin-bottom:4px">Kualitas Efluen (Rata-rata)</div>
+          <div class="effluen-grid">
+            <div class="eff-item"><div class="eff-label">BOD</div><div class="eff-sub">18 mg/L</div><div class="eff-status">Baik</div></div>
+            <div class="eff-item"><div class="eff-label">COD</div><div class="eff-sub">32 mg/L</div><div class="eff-status">Baik</div></div>
+            <div class="eff-item"><div class="eff-label">TSS</div><div class="eff-sub">15 mg/L</div><div class="eff-status">Baik</div></div>
+            <div class="eff-item"><div class="eff-label">pH</div><div class="eff-sub">7.2</div><div class="eff-status" style="color:var(--blue)">Normal</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-file-text"></i> Pelaporan & Pengaduan <span class="see-all" onclick="goIns('laporan')">Lihat Semua ›</span></div>
+          <div class="report-grid">
+            <div class="rep-item"><div class="rep-icon" style="background:var(--green-light);color:var(--green)"><i class="ti ti-file-plus"></i></div><div class="rep-val">12</div><div class="rep-label">Laporan Masuk</div></div>
+            <div class="rep-item"><div class="rep-icon" style="background:var(--amber-light);color:var(--amber)"><i class="ti ti-loader"></i></div><div class="rep-val">6</div><div class="rep-label">Proses</div></div>
+            <div class="rep-item"><div class="rep-icon" style="background:var(--teal-light);color:var(--teal)"><i class="ti ti-circle-check"></i></div><div class="rep-val">28</div><div class="rep-label">Selesai</div></div>
+            <div class="rep-item"><div class="rep-icon" style="background:var(--red-light);color:var(--red)"><i class="ti ti-alert-triangle"></i></div><div class="rep-val">7</div><div class="rep-label">Pengaduan</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-activity"></i> Aktivitas Terbaru</div>
+          <div class="activity-item"><div class="act-dot" style="background:var(--green)"></div><div class="act-text">Truk JMB-12-03 memulai tugas penyedotan — Kec. Jelutung</div><span class="act-time">08:15</span></div>
+          <div class="activity-item"><div class="act-dot" style="background:var(--amber)"></div><div class="act-text">Laporan limbah diterima dari RSUD A. Thalib</div><span class="act-time">07:42</span></div>
+          <div class="activity-item"><div class="act-dot" style="background:var(--blue)"></div><div class="act-text">IPAL Putri Mayang — kualitas efluen normal</div><span class="act-time">07:10</span></div>
+        </div>
+
+        <div class="promo-card-green">
+          <div style="flex:1">
+            <div class="promo-text-white"><div class="title">Kelola sanitasi lebih efisien</div><div class="sub">untuk lingkungan kota yang lebih sehat</div></div>
+            <button class="btn-amber" style="margin-top:10px;font-size:12px;padding:8px 14px" onclick="showToastIns('Dashboard lengkap dibuka')"><i class="ti ti-layout-dashboard"></i> Lihat Dashboard Lengkap</button>
+          </div>
+          <i class="ti ti-leaf" style="font-size:48px;color:rgba(255,255,255,0.15);flex-shrink:0"></i>
+        </div>
+      </div>
+      <div class="bottomnav">
+        <div class="nav-item active" onclick="goIns('home')"><i class="ti ti-home"></i>Beranda</div>
+        <div class="nav-item" onclick="goIns('armada')"><i class="ti ti-truck"></i>Armada</div>
+        <div class="nav-item" onclick="goIns('ipal')"><i class="ti ti-droplet"></i>IPAL</div>
+        <div class="nav-item" onclick="goIns('laporan')"><i class="ti ti-file-text"></i>Laporan</div>
+        <div class="nav-item" onclick="goIns('akun')"><i class="ti ti-user-circle"></i>Akun</div>
+      </div>
+    </div>
+
+    <!-- ARMADA -->
+    <div class="screen" id="ins-armada">
+      <div class="topbar"><i class="ti ti-arrow-left topbar-icon" onclick="goIns('home')"></i><div class="topbar-title">Armada Truk Tinja</div><i class="ti ti-filter topbar-icon" onclick="showToastIns('Filter armada')"></i></div>
+      <div class="scroll">
+        <div style="display:flex;gap:8px">
+          <div style="flex:1;background:var(--green);color:#fff;border-radius:10px;padding:10px;text-align:center;font-size:12px;font-weight:700">18 Aktif</div>
+          <div style="flex:1;background:var(--amber-light);color:var(--amber);border-radius:10px;padding:10px;text-align:center;font-size:12px;font-weight:700">12 Bertugas</div>
+          <div style="flex:1;background:#f0f0f0;color:#888;border-radius:10px;padding:10px;text-align:center;font-size:12px;font-weight:700">7 Standby</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-list"></i> Daftar Armada</div>
+          <div class="armada-item" onclick="showToastIns('Detail JMB-12-03')"><div class="armada-icon green"><i class="ti ti-truck"></i></div><div style="flex:1"><div class="armada-name">JMB-12-03</div><div class="armada-sub">Sopir: Budi Santoso · Kec. Jelutung</div></div><span class="armada-status bertugas">Bertugas</span></div>
+          <div class="armada-item" onclick="showToastIns('Detail JMB-07-01')"><div class="armada-icon green"><i class="ti ti-truck"></i></div><div style="flex:1"><div class="armada-name">JMB-07-01</div><div class="armada-sub">Sopir: Hendra · Kec. Telanaipura</div></div><span class="armada-status aktif">Aktif</span></div>
+          <div class="armada-item" onclick="showToastIns('Detail JMB-05-02')"><div class="armada-icon amber"><i class="ti ti-truck"></i></div><div style="flex:1"><div class="armada-name">JMB-05-02</div><div class="armada-sub">Sopir: Rahmat · Kec. Danau Teluk</div></div><span class="armada-status bertugas">Bertugas</span></div>
+          <div class="armada-item" onclick="showToastIns('Detail JMB-09-04')"><div class="armada-icon gray"><i class="ti ti-truck"></i></div><div style="flex:1"><div class="armada-name">JMB-09-04</div><div class="armada-sub">Sopir: Agus · Pool Jambi</div></div><span class="armada-status standby">Standby</span></div>
+          <div class="armada-item" onclick="showToastIns('Detail JMB-11-05')"><div class="armada-icon green"><i class="ti ti-truck"></i></div><div style="flex:1"><div class="armada-name">JMB-11-05</div><div class="armada-sub">Sopir: Doni · Kec. Pasar Jambi</div></div><span class="armada-status aktif">Aktif</span></div>
+          <div class="armada-item" onclick="showToastIns('Detail JMB-03-07')"><div class="armada-icon gray"><i class="ti ti-truck"></i></div><div style="flex:1"><div class="armada-name">JMB-03-07</div><div class="armada-sub">Sopir: Rizki · Pool Jambi</div></div><span class="armada-status standby">Standby</span></div>
+        </div>
+        <button class="btn-primary" onclick="showToastIns('Tambah armada baru')"><i class="ti ti-plus"></i> Tambah Armada</button>
+      </div>
+      <div class="bottomnav">
+        <div class="nav-item" onclick="goIns('home')"><i class="ti ti-home"></i>Beranda</div>
+        <div class="nav-item active" onclick="goIns('armada')"><i class="ti ti-truck"></i>Armada</div>
+        <div class="nav-item" onclick="goIns('ipal')"><i class="ti ti-droplet"></i>IPAL</div>
+        <div class="nav-item" onclick="goIns('laporan')"><i class="ti ti-file-text"></i>Laporan</div>
+        <div class="nav-item" onclick="goIns('akun')"><i class="ti ti-user-circle"></i>Akun</div>
+      </div>
+    </div>
+
+    <!-- IPAL -->
+    <div class="screen" id="ins-ipal">
+      <div class="topbar"><i class="ti ti-arrow-left topbar-icon" onclick="goIns('home')"></i><div class="topbar-title">IPAL — Instalasi Pengolahan</div></div>
+      <div class="scroll">
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+          <div class="card" style="padding:12px;text-align:center"><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">IPAL Aktif</div><div style="font-size:24px;font-weight:800;color:var(--green)">7 <span style="font-size:14px;font-weight:500;color:var(--text-muted)">/ 9</span></div></div>
+          <div class="card" style="padding:12px;text-align:center"><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Kapasitas Terpakai</div><div style="font-size:24px;font-weight:800;color:var(--amber)">68%</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-building-factory-2"></i> Daftar IPAL</div>
+          <div class="armada-item" onclick="showToastIns('Detail IPAL Putri Mayang')"><div class="armada-icon green"><i class="ti ti-building-factory-2"></i></div><div style="flex:1"><div class="armada-name">IPAL Putri Mayang</div><div class="armada-sub">Kapasitas: 200 m³/hari · 85% terpakai</div></div><span class="armada-status aktif">Aktif</span></div>
+          <div class="armada-item" onclick="showToastIns('Detail IPAL Jelutung')"><div class="armada-icon green"><i class="ti ti-building-factory-2"></i></div><div style="flex:1"><div class="armada-name">IPAL Jelutung</div><div class="armada-sub">Kapasitas: 150 m³/hari · 62% terpakai</div></div><span class="armada-status aktif">Aktif</span></div>
+          <div class="armada-item" onclick="showToastIns('Detail IPAL Kota Baru')"><div class="armada-icon amber"><i class="ti ti-building-factory-2"></i></div><div style="flex:1"><div class="armada-name">IPAL Kota Baru</div><div class="armada-sub">Kapasitas: 100 m³/hari · 91% terpakai</div></div><span class="armada-status bertugas" style="background:#fff4e0;color:#e07b00">Penuh</span></div>
+          <div class="armada-item" onclick="showToastIns('Detail IPAL Danau Teluk')"><div class="armada-icon gray"><i class="ti ti-building-factory-2"></i></div><div style="flex:1"><div class="armada-name">IPAL Danau Teluk</div><div class="armada-sub">Pemeliharaan berkala</div></div><span class="armada-status standby">Maintenance</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-flask"></i> Kualitas Efluen Hari Ini</div>
+          <div class="effluen-grid" style="grid-template-columns:repeat(4,1fr)">
+            <div class="eff-item"><div class="eff-label">BOD</div><div class="eff-sub">18 mg/L</div><div class="eff-status">Baik</div></div>
+            <div class="eff-item"><div class="eff-label">COD</div><div class="eff-sub">32 mg/L</div><div class="eff-status">Baik</div></div>
+            <div class="eff-item"><div class="eff-label">TSS</div><div class="eff-sub">15 mg/L</div><div class="eff-status">Baik</div></div>
+            <div class="eff-item"><div class="eff-label">pH</div><div class="eff-sub">7.2</div><div class="eff-status" style="color:var(--blue)">Normal</div></div>
+          </div>
+          <div style="margin-top:10px;font-size:11px;display:flex;align-items:center;gap:6px;color:var(--green)"><i class="ti ti-circle-check" style="font-size:14px"></i> Semua parameter memenuhi baku mutu Permen LHK</div>
+        </div>
+      </div>
+      <div class="bottomnav">
+        <div class="nav-item" onclick="goIns('home')"><i class="ti ti-home"></i>Beranda</div>
+        <div class="nav-item" onclick="goIns('armada')"><i class="ti ti-truck"></i>Armada</div>
+        <div class="nav-item active" onclick="goIns('ipal')"><i class="ti ti-droplet"></i>IPAL</div>
+        <div class="nav-item" onclick="goIns('laporan')"><i class="ti ti-file-text"></i>Laporan</div>
+        <div class="nav-item" onclick="goIns('akun')"><i class="ti ti-user-circle"></i>Akun</div>
+      </div>
+    </div>
+
+    <!-- LAPORAN -->
+    <div class="screen" id="ins-laporan">
+      <div class="topbar"><i class="ti ti-arrow-left topbar-icon" onclick="goIns('home')"></i><div class="topbar-title">Pelaporan & Pengaduan</div></div>
+      <div class="scroll">
+        <div class="report-grid">
+          <div class="rep-item" onclick="showToastIns('12 laporan masuk')"><div class="rep-icon" style="background:var(--green-light);color:var(--green)"><i class="ti ti-file-plus"></i></div><div class="rep-val">12</div><div class="rep-label">Masuk</div></div>
+          <div class="rep-item" onclick="showToastIns('6 laporan diproses')"><div class="rep-icon" style="background:var(--amber-light);color:var(--amber)"><i class="ti ti-loader"></i></div><div class="rep-val">6</div><div class="rep-label">Proses</div></div>
+          <div class="rep-item" onclick="showToastIns('28 laporan selesai')"><div class="rep-icon" style="background:var(--teal-light);color:var(--teal)"><i class="ti ti-circle-check"></i></div><div class="rep-val">28</div><div class="rep-label">Selesai</div></div>
+          <div class="rep-item" onclick="showToastIns('7 pengaduan aktif')"><div class="rep-icon" style="background:var(--red-light);color:var(--red)"><i class="ti ti-alert-triangle"></i></div><div class="rep-val">7</div><div class="rep-label">Pengaduan</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-list"></i> Laporan Terbaru</div>
+          <div class="armada-item" onclick="showToastIns('Detail laporan RSUD A. Thalib')"><div class="armada-icon green"><i class="ti ti-file-text"></i></div><div style="flex:1"><div class="armada-name">Laporan Limbah RSUD A. Thalib</div><div class="armada-sub">07:42 hari ini</div></div><span class="armada-status bertugas">Proses</span></div>
+          <div class="armada-item" onclick="showToastIns('Detail laporan Telanaipura')"><div class="armada-icon amber"><i class="ti ti-alert-circle"></i></div><div style="flex:1"><div class="armada-name">Pengaduan Luapan Kec. Telanaipura</div><div class="armada-sub">Kemarin, 15:30</div></div><span class="armada-status" style="background:var(--red-light);color:var(--red)">Baru</span></div>
+          <div class="armada-item" onclick="showToastIns('Detail laporan Hotel Abadi')"><div class="armada-icon green"><i class="ti ti-file-text"></i></div><div style="flex:1"><div class="armada-name">Laporan Hotel Abadi Suite</div><div class="armada-sub">Kemarin, 09:15</div></div><span class="armada-status aktif">Selesai</span></div>
+        </div>
+        <button class="btn-primary" onclick="showToastIns('Unduh laporan bulanan PDF')"><i class="ti ti-download"></i> Unduh Laporan Bulanan</button>
+      </div>
+      <div class="bottomnav">
+        <div class="nav-item" onclick="goIns('home')"><i class="ti ti-home"></i>Beranda</div>
+        <div class="nav-item" onclick="goIns('armada')"><i class="ti ti-truck"></i>Armada</div>
+        <div class="nav-item" onclick="goIns('ipal')"><i class="ti ti-droplet"></i>IPAL</div>
+        <div class="nav-item active" onclick="goIns('laporan')"><i class="ti ti-file-text"></i>Laporan</div>
+        <div class="nav-item" onclick="goIns('akun')"><i class="ti ti-user-circle"></i>Akun</div>
+      </div>
+    </div>
+
+    <!-- AKUN INSTITUSI -->
+    <div class="screen" id="ins-akun">
+      <div class="statusbar" style="background:var(--green);padding:10px 20px 6px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0"><span style="color:#fff;font-size:13px;font-weight:700">9:41</span><div style="display:flex;gap:5px;color:#fff;font-size:13px"><i class="ti ti-wifi"></i><i class="ti ti-battery-2"></i></div></div>
+      <div class="profile-hdr">
+        <div class="profile-av"><i class="ti ti-building"></i></div>
+        <div><div class="profile-name">DLH Kota Jambi</div><div class="profile-sub">admin.dlh@jambikota.go.id</div><div class="profile-sub">ID Institusi: INS-001</div></div>
+      </div>
+      <div class="scroll" style="padding-top:8px">
+        <div class="card">
+          <div class="menu-row" onclick="showToastIns('Manajemen pengguna')"><div class="menu-row-icon green"><i class="ti ti-users"></i></div><div><div class="menu-row-label">Manajemen Pengguna</div><div class="menu-row-sub">Kelola akses petugas</div></div><i class="ti ti-chevron-right" style="color:var(--text-hint)"></i></div>
+          <div class="menu-row" onclick="showToastIns('Konfigurasi wilayah')"><div class="menu-row-icon green"><i class="ti ti-map"></i></div><div><div class="menu-row-label">Wilayah Layanan</div><div class="menu-row-sub">14 kecamatan aktif</div></div><i class="ti ti-chevron-right" style="color:var(--text-hint)"></i></div>
+          <div class="menu-row" onclick="showToastIns('Setelan notifikasi')"><div class="menu-row-icon amber"><i class="ti ti-bell"></i></div><div><div class="menu-row-label">Notifikasi & Alert</div><div class="menu-row-sub">Konfigurasi peringatan sistem</div></div><i class="ti ti-chevron-right" style="color:var(--text-hint)"></i></div>
+          <div class="menu-row" onclick="showToastIns('Laporan & analitik')"><div class="menu-row-icon blue"><i class="ti ti-chart-bar"></i></div><div><div class="menu-row-label">Analitik & Statistik</div><div class="menu-row-sub">Laporan kinerja bulanan</div></div><i class="ti ti-chevron-right" style="color:var(--text-hint)"></i></div>
+          <div class="menu-row" onclick="showToastIns('Keluar dari akun institusi')"><div class="menu-row-icon red"><i class="ti ti-logout"></i></div><div><div class="menu-row-label" style="color:var(--red)">Keluar</div></div><i class="ti ti-chevron-right" style="color:var(--text-hint)"></i></div>
+        </div>
+        <div style="text-align:center;font-size:11px;color:var(--text-hint);padding:4px 0 8px">Jambi Sanita+ v1.8.0 · Pemkot Jambi</div>
+      </div>
+      <div class="bottomnav">
+        <div class="nav-item" onclick="goIns('home')"><i class="ti ti-home"></i>Beranda</div>
+        <div class="nav-item" onclick="goIns('armada')"><i class="ti ti-truck"></i>Armada</div>
+        <div class="nav-item" onclick="goIns('ipal')"><i class="ti ti-droplet"></i>IPAL</div>
+        <div class="nav-item" onclick="goIns('laporan')"><i class="ti ti-file-text"></i>Laporan</div>
+        <div class="nav-item active" onclick="goIns('akun')"><i class="ti ti-user-circle"></i>Akun</div>
+      </div>
+    </div>
+
+    <!-- NOTIF INS -->
+    <div class="notif-panel" id="notif-ins">
+      <div class="statusbar" style="background:var(--green);padding:10px 20px 6px;display:flex;justify-content:space-between;align-items:center"><span style="color:#fff;font-size:13px;font-weight:700">9:41</span><div style="display:flex;gap:5px;color:#fff;font-size:13px"><i class="ti ti-wifi"></i><i class="ti ti-battery-2"></i></div></div>
+      <div class="topbar"><i class="ti ti-arrow-left topbar-icon" onclick="hideNotifIns()"></i><div class="topbar-title">Notifikasi</div><span style="color:rgba(255,255,255,0.8);font-size:12px;cursor:pointer" onclick="showToastIns('Semua notifikasi dibaca')">Tandai dibaca</span></div>
+      <div style="flex:1;overflow-y:auto">
+        <div class="notif-item"><div class="notif-dot-s"></div><div><div class="notif-msg-title">IPAL Kota Baru mendekati kapasitas</div><div class="notif-msg-body">Kapasitas IPAL Kota Baru telah mencapai 91%. Pertimbangkan pengalihan beban ke IPAL lain.</div><div class="notif-time">Hari ini, 07:30</div></div></div>
+        <div class="notif-item"><div class="notif-dot-s"></div><div><div class="notif-msg-title">7 pengaduan baru masuk</div><div class="notif-msg-body">Terdapat 7 pengaduan baru yang belum ditangani. Segera tindak lanjuti.</div><div class="notif-time">Kemarin, 16:00</div></div></div>
+        <div class="notif-item"><div class="notif-dot-s read"></div><div><div class="notif-msg-title">Laporan bulanan siap</div><div class="notif-msg-body">Laporan kinerja bulan April 2026 telah selesai dikompilasi dan siap diunduh.</div><div class="notif-time">3 hari lalu</div></div></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast-ins"></div>
+  </div>
+</div>
+
+<!-- ========== PELANGGAN COLUMN ========== -->
+<div class="column">
+  <div class="col-label">MODE PELANGGAN</div>
+  <div class="phone" id="phone-pel">
+
+    <div class="statusbar">
+      <span class="statusbar-time" id="clock-pel">9:41</span>
+      <div class="statusbar-icons"><i class="ti ti-signal-4g"></i><i class="ti ti-wifi"></i><i class="ti ti-battery-2"></i></div>
+    </div>
+
+    <!-- HOME PELANGGAN -->
+    <div class="screen active" id="pel-home">
+      <div class="header-home">
+        <div class="header-top">
+          <div><div class="logo-text">JAMBI <span>SANITA+</span></div><div class="logo-sub">+ Solusi Sanitasi Kota Modern +</div></div>
+          <div class="header-icons">
+            <div class="hdr-icon-btn" onclick="showNotifPel()"><i class="ti ti-bell"></i><span class="notif-badge">2</span></div>
+            <div class="hdr-icon-btn" onclick="goPel('akun')"><i class="ti ti-user-circle"></i></div>
+          </div>
+        </div>
+        <div class="greet-label">Selamat pagi,</div>
+        <div class="greet-name">Andi Pratama
+          <span class="mode-badge pelanggan"><i class="ti ti-user" style="font-size:10px"></i> Pelanggan</span>
+        </div>
+      </div>
+      <div class="scroll">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:-4px">Ringkasan Layanan</div>
+        <div class="layanan-grid">
+          <div class="lay-card green" onclick="goPel('jadwal')">
+            <div class="lay-icon green"><i class="ti ti-truck"></i></div>
+            <div class="lay-title">Jadwal Sedot Tinja</div>
+            <div style="font-size:18px;font-weight:800;color:var(--green);margin:4px 0">23 Mei 2024</div>
+            <div style="font-size:11px;color:var(--text-muted)">(10 hari lagi)</div>
+            <button class="btn-outline" style="margin-top:10px;width:100%;padding:8px;font-size:11px" onclick="event.stopPropagation();showToastPel('Detail jadwal sedot tinja')">Lihat Detail</button>
+          </div>
+          <div class="lay-card blue" onclick="goPel('tagihan')">
+            <div class="lay-icon blue"><i class="ti ti-receipt"></i></div>
+            <div class="lay-title">Tagihan Air Limbah</div>
+            <div style="font-size:17px;font-weight:800;color:var(--blue);margin:4px 0">Rp 128.500</div>
+            <div style="font-size:11px;color:var(--text-muted)">Jatuh tempo 25 Mei</div>
+            <button class="btn-outline" style="margin-top:10px;width:100%;padding:8px;font-size:11px;color:var(--blue);border-color:var(--blue)" onclick="event.stopPropagation();goPel('tagihan')">Lihat Tagihan</button>
+          </div>
+        </div>
+
+        <div class="reminder-card" id="reminderCard">
+          <div class="reminder-close" onclick="document.getElementById('reminderCard').style.display='none'"><i class="ti ti-x"></i></div>
+          <div class="reminder-title"><i class="ti ti-bell" style="font-size:14px"></i> Pengingat</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Jangan lupa! Waktu penyedotan septic tank Anda</div>
+          <div class="reminder-date">23 Mei 2024</div>
+          <div class="reminder-sub">Kami akan mengirimkan notifikasi sebelum jadwal.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-history"></i> Histori Layanan <span class="see-all" onclick="showToastPel('Semua histori layanan')">Lihat Semua ›</span></div>
+          <div class="hist-item" onclick="showToastPel('Detail sedot tinja 15 Apr')">
+            <div class="hist-icon-box green"><i class="ti ti-truck"></i></div>
+            <div style="flex:1"><div class="hist-title">Sedot Tinja</div><div class="hist-sub">15 Apr 2024 · Petugas: JMB-07-01</div></div>
+            <span class="hist-badge success">Berhasil</span>
+          </div>
+          <div class="hist-item" onclick="goPel('tagihan')">
+            <div class="hist-icon-box blue"><i class="ti ti-receipt"></i></div>
+            <div style="flex:1"><div class="hist-title">Tagihan Air Limbah</div><div class="hist-sub">25 Apr 2024 · Pembayaran berhasil</div></div>
+            <span class="hist-amount">Rp 116.000</span>
+          </div>
+          <div class="hist-item" onclick="showToastPel('Detail sedot tinja 10 Jan')">
+            <div class="hist-icon-box green"><i class="ti ti-truck"></i></div>
+            <div style="flex:1"><div class="hist-title">Sedot Tinja</div><div class="hist-sub">10 Jan 2024 · Petugas: JMB-05-02</div></div>
+            <span class="hist-badge success">Berhasil</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-receipt"></i> Tagihan Air Limbah <span class="see-all" onclick="goPel('tagihan')">Lihat Semua ›</span></div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Total Tagihan</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="font-size:24px;font-weight:800;color:var(--text)">Rp 128.500</div>
+            <span style="background:#ff6b35;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px">Belum Dibayar</span>
+          </div>
+          <div style="display:flex;gap:16px;margin-bottom:14px">
+            <div><div style="font-size:10px;color:var(--text-muted)">Periode</div><div style="font-size:12px;font-weight:700">April 2024</div></div>
+            <div><div style="font-size:10px;color:var(--text-muted)">Jatuh Tempo</div><div style="font-size:12px;font-weight:700">25 Mei 2024</div></div>
+          </div>
+          <button class="btn-primary" onclick="showPayModalPel()"><i class="ti ti-credit-card"></i> Bayar Sekarang</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-chart-bar"></i> Estimasi Penggunaan Air Limbah <span class="see-all" style="font-size:10px;font-weight:600;color:var(--text-muted)">6 bulan terakhir</span></div>
+          <div style="display:flex;align-items:flex-end;gap:6px;height:80px">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;border-radius:4px 4px 0 0;background:#b8d8c0;height:50px"></div><div style="font-size:9px;color:var(--text-muted)">Nov</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;border-radius:4px 4px 0 0;background:#b8d8c0;height:44px"></div><div style="font-size:9px;color:var(--text-muted)">Des</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;border-radius:4px 4px 0 0;background:#b8d8c0;height:56px"></div><div style="font-size:9px;color:var(--text-muted)">Jan</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;border-radius:4px 4px 0 0;background:#b8d8c0;height:48px"></div><div style="font-size:9px;color:var(--text-muted)">Feb</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;border-radius:4px 4px 0 0;background:#b8d8c0;height:60px"></div><div style="font-size:9px;color:var(--text-muted)">Mar</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;border-radius:4px 4px 0 0;background:var(--green);height:52px"></div><div style="font-size:9px;color:var(--text-muted)">Apr</div></div>
+          </div>
+        </div>
+
+        <div class="cs-card">
+          <div style="flex:1"><div class="cs-text"><div class="title">Butuh Bantuan?</div><div class="sub">Hubungi kami untuk informasi dan layanan</div></div><button class="btn-outline" style="margin-top:10px;font-size:12px;padding:8px 14px;display:flex;align-items:center;gap:6px" onclick="showToastPel('Menghubungi CS Jambi Sanita+')"><i class="ti ti-headset"></i> Hubungi CS</button></div>
+          <i class="ti ti-truck" style="font-size:48px;color:#b8d8c0;flex-shrink:0"></i>
+        </div>
+      </div>
+      <div class="bottomnav">
+        <div class="nav-item active" onclick="goPel('home')"><i class="ti ti-home"></i>Beranda</div>
+        <div class="nav-item" onclick="goPel('tagihan')"><i class="ti ti-receipt"></i>Tagihan</div>
+        <div class="nav-item" onclick="goPel('jadwal')"><i class="ti ti-calendar"></i>Layanan</div>
+        <div class="nav-item" onclick="goPel('riwayat')"><i class="ti ti-clock"></i>Riwayat</div>
+        <div class="nav-item" onclick="goPel('akun')"><i class="ti ti-user-circle"></i>Akun</div>
+      </div>
+    </div>
+
+    <!-- TAGIHAN PELANGGAN -->
+    <div class="screen" id="pel-tagihan">
+      <div class="statusbar" style="background:var(--green);padding:10px 20px 6px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0"><span style="color:#fff;font-size:13px;font-weight:700">9:41</span><div style="display:flex;gap:5px;color:#fff;font-size:13px"><i class="ti ti-wifi"></i><i class="ti ti-battery-2"></i></div></div>
+      <div class="topbar"><i class="ti ti-arrow-left topbar-icon" onclick="goPel('home')"></i><div class="topbar-title">Tagihan Air Limbah</div></div>
+      <div class="tagihan-hero-pel">
+        <div class="tag-label">Total Tagihan</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          <div class="tag-amount">Rp 128.500</div>
+          <span style="background:#ff6b35;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px">Belum Dibayar</span>
+        </div>
+        <div class="tag-info-row">
+          <div class="tag-info-item"><div class="tag-info-label">Periode</div><div class="tag-info-val">April 2024</div></div>
+          <div class="tag-info-item"><div class="tag-info-label">Jatuh Tempo</div><div class="tag-info-val">25 Mei 2024</div></div>
+        </div>
+      </div>
+      <div class="scroll">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-file-text"></i> Rincian Tagihan</div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--border)"><span style="font-size:12px;color:var(--text-muted)">Biaya Pengelolaan Air Limbah</span><span style="font-size:12px;font-weight:700">Rp 110.000</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--border)"><span style="font-size:12px;color:var(--text-muted)">Retribusi Sanitasi</span><span style="font-size:12px;font-weight:700">Rp 15.000</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--border)"><span style="font-size:12px;color:var(--text-muted)">PPN (2%)</span><span style="font-size:12px;font-weight:700">Rp 2.500</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:13px;font-weight:700">Total</span><span style="font-size:15px;font-weight:800;color:var(--green)">Rp 128.500</span></div>
+        </div>
+        <button class="btn-primary" onclick="showPayModalPel()"><i class="ti ti-credit-card"></i> Bayar Sekarang</button>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-history"></i> Riwayat Pembayaran</div>
+          <div class="hist-item" onclick="showToastPel('Detail Maret 2024')"><div class="hist-icon-box green"><i class="ti ti-receipt"></i></div><div style="flex:1"><div class="hist-title">Maret 2024</div><div class="hist-sub">Dibayar 20 Apr 2024</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:700">Rp 116.000</div><span class="hist-badge success">Lunas</span></div></div>
+          <div class="hist-item" onclick="showToastPel('Detail Februari 2024')"><div class="hist-icon-box green"><i class="ti ti-receipt"></i></div><div style="flex:1"><div class="hist-title">Februari 2024</div><div class="hist-sub">Dibayar 18 Mar 2024</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:700">Rp 112.000</div><span class="hist-badge success">Lunas</span></div></div>
+          <div class="hist-item" onclick="showToastPel('Detail Januari 2024')"><div class="hist-icon-box green"><i class="ti ti-receipt"></i></div><div style="flex:1"><div class="hist-title">Januari 2024</div><div class="hist-sub">Dibayar 15 Feb 2024</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:700">Rp 108.500</div><span class="hist-badge success">Lunas</span></div></div>
+        </div>
+      </div>
+      <div class="bottomnav">
+        <div class="nav-item" onclick="goPel('home')"><i class="ti ti-home"></i>Beranda</div>
+        <div class="nav-item active" onclick="goPel('tagihan')"><i class="ti ti-receipt"></i>Tagihan</div>
+        <div class="nav-item" onclick="goPel('jadwal')"><i class="ti ti-calendar"></i>Layanan</div>
+        <div class="nav-item" onclick="goPel('riwayat')"><i class="ti ti-clock"></i>Riwayat</div>
+        <div class="nav-item" onclick="goPel('akun')"><i class="ti ti-user-circle"></i>Akun</div>
+      </div>
+    </div>
+
+    <!-- JADWAL -->
+    <div class="screen" id="pel-jadwal">
+      <div class="statusbar" style="background:var(--green);padding:10px 20px 6px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0"><span style="color:#fff;font-size:13px;font-weight:700">9:41</span><div style="display:flex;gap:5px;color:#fff;font-size:13px"><i class="ti ti-wifi"></i><i class="ti ti-battery-2"></i></div></div>
+      <div class="topbar"><i class="ti ti-arrow-left topbar-icon" onclick="goPel('home')"></i><div class="topbar-title">Jadwal Layanan</div></div>
+      <div class="scroll">
+        <div class="card" style="background:var(--green-pale);border:0.5px solid #b8d8c0">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:50px;height:50px;background:var(--green);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-truck" style="color:#fff;font-size:24px"></i></div>
+            <div><div style="font-size:11px;color:var(--green);font-weight:700">Jadwal berikutnya</div><div style="font-size:18px;font-weight:800;color:var(--text)">23 Mei 2024</div><div style="font-size:12px;color:var(--text-muted)">10 hari lagi · 08:00–12:00 WIB</div></div>
+          </div>
+          <div style="margin-top:12px;padding:10px;background:#fff;border-radius:10px;font-size:12px;color:var(--text-muted)"><i class="ti ti-user" style="font-size:14px;color:var(--green);vertical-align:-2px"></i> Petugas: Tim JMB-A3 · <i class="ti ti-phone" style="font-size:14px;color:var(--green);vertical-align:-2px"></i> 0811-7400-123</div>
+        </div>
+        <div class="jadwal-card">
+          <div class="jadwal-header"><div class="jadwal-tanggal">Jadwal Anda — Mei 2024</div><div class="jadwal-hari">Riwayat & mendatang</div></div>
+          <div class="jadwal-item"><div class="jadwal-time">08:15</div><div class="jadwal-dot"></div><div style="flex:1"><div class="jadwal-name">Sedot Tinja</div><div class="jadwal-addr">Jl. Sultan Thaha No. 12, Jambi</div></div><span class="jadwal-badge done">Selesai</span></div>
+          <div class="jadwal-item" style="background:#f9fff9"><div class="jadwal-time">08:00</div><div class="jadwal-dot" style="background:var(--amber)"></div><div style="flex:1"><div class="jadwal-name">Sedot Tinja — Berikutnya</div><div class="jadwal-addr">Jl. Sultan Thaha No. 12, Jambi</div></div><span class="jadwal-badge upcoming">23 Mei</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-calendar-plus"></i> Pesan Layanan Baru</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Pesan layanan sedot tinja di luar jadwal rutin</div>
+          <button class="btn-primary" onclick="showToastPel('Form pemesanan layanan dibuka')"><i class="ti ti-plus"></i> Pesan Sekarang</button>
+        </div>
+      </div>
+      <div class="bottomnav">
+        <div class="nav-item" onclick="goPel('home')"><i class="ti ti-home"></i>Beranda</div>
+        <div class="nav-item" onclick="goPel('tagihan')"><i class="ti ti-receipt"></i>Tagihan</div>
+        <div class="nav-item active" onclick="goPel('jadwal')"><i class="ti ti-calendar"></i>Layanan</div>
+        <div class="nav-item" onclick="goPel('riwayat')"><i class="ti ti-clock"></i>Riwayat</div>
+        <div class="nav-item" onclick="goPel('akun')"><i class="ti ti-user-circle"></i>Akun</div>
+      </div>
+    </div>
+
+    <!-- RIWAYAT -->
+    <div class="screen" id="pel-riwayat">
+      <div class="statusbar" style="background:var(--green);padding:10px 20px 6px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0"><span style="color:#fff;font-size:13px;font-weight:700">9:41</span><div style="display:flex;gap:5px;color:#fff;font-size:13px"><i class="ti ti-wifi"></i><i class="ti ti-battery-2"></i></div></div>
+      <div class="topbar"><i class="ti ti-arrow-left topbar-icon" onclick="goPel('home')"></i><div class="topbar-title">Riwayat Layanan</div><i class="ti ti-filter topbar-icon" onclick="showToastPel('Filter riwayat')"></i></div>
+      <div class="scroll">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-list"></i> Semua Riwayat</div>
+          <div class="hist-item" onclick="showToastPel('Detail Apr 2024')"><div class="hist-icon-box green"><i class="ti ti-truck"></i></div><div style="flex:1"><div class="hist-title">Sedot Tinja</div><div class="hist-sub">15 Apr 2024 · Petugas: JMB-07-01</div></div><span class="hist-badge success">Berhasil</span></div>
+          <div class="hist-item" onclick="showToastPel('Detail tagihan Apr 2024')"><div class="hist-icon-box blue"><i class="ti ti-receipt"></i></div><div style="flex:1"><div class="hist-title">Tagihan Dibayar</div><div class="hist-sub">25 Apr 2024 · Transfer Bank</div></div><span style="font-size:12px;font-weight:700;color:var(--green)">Rp 116.000</span></div>
+          <div class="hist-item" onclick="showToastPel('Detail Jan 2024')"><div class="hist-icon-box green"><i class="ti ti-truck"></i></div><div style="flex:1"><div class="hist-title">Sedot Tinja</div><div class="hist-sub">10 Jan 2024 · Petugas: JMB-05-02</div></div><span class="hist-badge success">Berhasil</span></div>
+          <div class="hist-item" onclick="showToastPel('Detail tagihan Jan 2024')"><div class="hist-icon-box blue"><i class="ti ti-receipt"></i></div><div style="flex:1"><div class="hist-title">Tagihan Dibayar</div><div class="hist-sub">20 Jan 2024 · E-Wallet</div></div><span style="font-size:12px;font-weight:700;color:var(--green)">Rp 108.500</span></div>
+          <div class="hist-item" onclick="showToastPel('Detail Okt 2023')"><div class="hist-icon-box green"><i class="ti ti-truck"></i></div><div style="flex:1"><div class="hist-title">Sedot Tinja</div><div class="hist-sub">5 Okt 2023 · Petugas: JMB-03-07</div></div><span class="hist-badge success">Berhasil</span></div>
+        </div>
+        <button class="btn-outline" style="width:100%" onclick="showToastPel('Unduh riwayat layanan PDF')"><i class="ti ti-download" style="font-size:16px;vertical-align:-3px;margin-right:4px"></i> Unduh Riwayat</button>
+      </div>
+      <div class="bottomnav">
+        <div class="nav-item" onclick="goPel('home')"><i class="ti ti-home"></i>Beranda</div>
+        <div class="nav-item" onclick="goPel('tagihan')"><i class="ti ti-receipt"></i>Tagihan</div>
+        <div class="nav-item" onclick="goPel('jadwal')"><i class="ti ti-calendar"></i>Layanan</div>
+        <div class="nav-item active" onclick="goPel('riwayat')"><i class="ti ti-clock"></i>Riwayat</div>
+        <div class="nav-item" onclick="goPel('akun')"><i class="ti ti-user-circle"></i>Akun</div>
+      </div>
+    </div>
+
+    <!-- AKUN PELANGGAN -->
+    <div class="screen" id="pel-akun">
+      <div class="statusbar" style="background:var(--green);padding:10px 20px 6px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0"><span style="color:#fff;font-size:13px;font-weight:700">9:41</span><div style="display:flex;gap:5px;color:#fff;font-size:13px"><i class="ti ti-wifi"></i><i class="ti ti-battery-2"></i></div></div>
+      <div class="profile-hdr">
+        <div class="profile-av"><i class="ti ti-user"></i></div>
+        <div><div class="profile-name">Andi Pratama</div><div class="profile-sub">andi.pratama@gmail.com</div><div class="profile-sub">ID: PLG-2024-0405 · Pelanggan Aktif</div></div>
+      </div>
+      <div class="scroll" style="padding-top:8px">
+        <div class="card">
+          <div class="menu-row" onclick="showToastPel('Edit profil pelanggan')"><div class="menu-row-icon green"><i class="ti ti-user-edit"></i></div><div><div class="menu-row-label">Edit Profil</div><div class="menu-row-sub">Jl. Sultan Thaha No. 12, Jambi</div></div><i class="ti ti-chevron-right" style="color:var(--text-hint)"></i></div>
+          <div class="menu-row" onclick="showToastPel('Jadwal layanan Anda')"><div class="menu-row-icon green"><i class="ti ti-truck"></i></div><div><div class="menu-row-label">Jadwal Layanan</div><div class="menu-row-sub">Berikutnya: 23 Mei 2024</div></div><i class="ti ti-chevron-right" style="color:var(--text-hint)"></i></div>
+          <div class="menu-row" onclick="goPel('tagihan')"><div class="menu-row-icon blue"><i class="ti ti-receipt"></i></div><div><div class="menu-row-label">Tagihan Saya</div><div class="menu-row-sub">Rp 128.500 belum dibayar</div></div><i class="ti ti-chevron-right" style="color:var(--text-hint)"></i></div>
+          <div class="menu-row" onclick="showToastPel('Pengaturan notifikasi')"><div class="menu-row-icon amber"><i class="ti ti-bell"></i></div><div><div class="menu-row-label">Notifikasi</div><div class="menu-row-sub">Pengingat jadwal & tagihan</div></div><i class="ti ti-chevron-right" style="color:var(--text-hint)"></i></div>
+          <div class="menu-row" onclick="showToastPel('Pusat bantuan')"><div class="menu-row-icon green"><i class="ti ti-help"></i></div><div><div class="menu-row-label">Bantuan</div><div class="menu-row-sub">FAQ & hubungi CS</div></div><i class="ti ti-chevron-right" style="color:var(--text-hint)"></i></div>
+          <div class="menu-row" onclick="showToastPel('Berhasil keluar')"><div class="menu-row-icon red"><i class="ti ti-logout"></i></div><div><div class="menu-row-label" style="color:var(--red)">Keluar</div></div><i class="ti ti-chevron-right" style="color:var(--text-hint)"></i></div>
+        </div>
+        <div style="text-align:center;font-size:11px;color:var(--text-hint);padding:4px 0 8px">Jambi Sanita+ v1.8.0 · Pemkot Jambi</div>
+      </div>
+      <div class="bottomnav">
+        <div class="nav-item" onclick="goPel('home')"><i class="ti ti-home"></i>Beranda</div>
+        <div class="nav-item" onclick="goPel('tagihan')"><i class="ti ti-receipt"></i>Tagihan</div>
+        <div class="nav-item" onclick="goPel('jadwal')"><i class="ti ti-calendar"></i>Layanan</div>
+        <div class="nav-item" onclick="goPel('riwayat')"><i class="ti ti-clock"></i>Riwayat</div>
+        <div class="nav-item active" onclick="goPel('akun')"><i class="ti ti-user-circle"></i>Akun</div>
+      </div>
+    </div>
+
+    <!-- NOTIF PEL -->
+    <div class="notif-panel" id="notif-pel">
+      <div class="statusbar" style="background:var(--green);padding:10px 20px 6px;display:flex;justify-content:space-between;align-items:center"><span style="color:#fff;font-size:13px;font-weight:700">9:41</span><div style="display:flex;gap:5px;color:#fff;font-size:13px"><i class="ti ti-wifi"></i><i class="ti ti-battery-2"></i></div></div>
+      <div class="topbar"><i class="ti ti-arrow-left topbar-icon" onclick="hideNotifPel()"></i><div class="topbar-title">Notifikasi</div></div>
+      <div style="flex:1;overflow-y:auto">
+        <div class="notif-item"><div class="notif-dot-s"></div><div><div class="notif-msg-title">Tagihan April 2024 belum dibayar</div><div class="notif-msg-body">Tagihan Rp 128.500 jatuh tempo 25 Mei 2024. Bayar sekarang agar tidak kena denda.</div><div class="notif-time">Hari ini, 08:00</div></div></div>
+        <div class="notif-item"><div class="notif-dot-s"></div><div><div class="notif-msg-title">Pengingat jadwal sedot tinja</div><div class="notif-msg-body">Jadwal penyedotan septic tank Anda adalah 23 Mei 2024 pukul 08:00–12:00 WIB.</div><div class="notif-time">Kemarin, 07:00</div></div></div>
+        <div class="notif-item"><div class="notif-dot-s read"></div><div><div class="notif-msg-title">Layanan selesai</div><div class="notif-msg-body">Penyedotan tanggal 15 April 2024 oleh petugas JMB-07-01 telah berhasil diselesaikan.</div><div class="notif-time">15 Apr, 10:30</div></div></div>
+      </div>
+    </div>
+
+    <!-- PAYMENT MODAL -->
+    <div class="modal-overlay" id="payModal-pel" onclick="closePayModalPel(event)">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div class="modal-title">Pilih metode pembayaran</div>
+        <div class="pay-method selected" id="ppm1" onclick="selPayPel('ppm1')"><div class="pay-method-icon"><i class="ti ti-building-bank"></i></div><div><div class="pay-method-name">Transfer Bank</div><div class="pay-method-desc">BRI, BNI, Mandiri, BTN</div></div><i class="ti ti-circle-check pay-check"></i></div>
+        <div class="pay-method" id="ppm2" onclick="selPayPel('ppm2')"><div class="pay-method-icon"><i class="ti ti-device-mobile"></i></div><div><div class="pay-method-name">E-Wallet</div><div class="pay-method-desc">GoPay, OVO, Dana, ShopeePay</div></div><i class="ti ti-circle-check pay-check"></i></div>
+        <div class="pay-method" id="ppm3" onclick="selPayPel('ppm3')"><div class="pay-method-icon"><i class="ti ti-building-store"></i></div><div><div class="pay-method-name">Minimarket</div><div class="pay-method-desc">Indomaret, Alfamart</div></div><i class="ti ti-circle-check pay-check"></i></div>
+        <button class="btn-primary" style="margin-top:12px" onclick="confirmPayPel()"><i class="ti ti-check"></i> Bayar Rp 128.500</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-screen" id="success-pel">
+      <div class="success-icon"><i class="ti ti-circle-check"></i></div>
+      <div style="font-size:18px;font-weight:800;color:var(--text);text-align:center">Pembayaran Berhasil!</div>
+      <div style="font-size:13px;color:var(--text-muted);text-align:center;line-height:1.6">Tagihan April 2024 senilai<br><strong>Rp 128.500</strong> telah dibayar.<br>Bukti dikirim ke email Anda.</div>
+      <button class="btn-primary" style="width:100%;margin-top:16px" onclick="hideSuccessPel()"><i class="ti ti-home"></i> Kembali ke Beranda</button>
+    </div>
+
+    <div class="toast" id="toast-pel"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function goIns(page) {
+  document.querySelectorAll('#phone-ins .screen').forEach(s => s.classList.remove('active'));
+  var el = document.getElementById('ins-' + page);
+  if (el) { el.classList.add('active'); var sc = el.querySelector('.scroll'); if(sc) sc.scrollTop=0; }
+}
+function goPel(page) {
+  document.querySelectorAll('#phone-pel .screen').forEach(s => s.classList.remove('active'));
+  var el = document.getElementById('pel-' + page);
+  if (el) { el.classList.add('active'); var sc = el.querySelector('.scroll'); if(sc) sc.scrollTop=0; }
+}
+
+var tiIns, tiPel;
+function showToastIns(msg) { var t=document.getElementById('toast-ins'); t.textContent=msg; t.classList.add('show'); clearTimeout(tiIns); tiIns=setTimeout(function(){t.classList.remove('show');},2000); }
+function showToastPel(msg) { var t=document.getElementById('toast-pel'); t.textContent=msg; t.classList.add('show'); clearTimeout(tiPel); tiPel=setTimeout(function(){t.classList.remove('show');},2000); }
+
+function showNotifIns() { document.getElementById('notif-ins').classList.add('show'); }
+function hideNotifIns() { document.getElementById('notif-ins').classList.remove('show'); }
+function showNotifPel() { document.getElementById('notif-pel').classList.add('show'); }
+function hideNotifPel() { document.getElementById('notif-pel').classList.remove('show'); }
+
+function showPayModalPel() { document.getElementById('payModal-pel').classList.add('show'); }
+function closePayModalPel(e) { if(e.target===document.getElementById('payModal-pel')) document.getElementById('payModal-pel').classList.remove('show'); }
+function selPayPel(id) { document.querySelectorAll('#payModal-pel .pay-method').forEach(m=>m.classList.remove('selected')); document.getElementById(id).classList.add('selected'); }
+function confirmPayPel() { document.getElementById('payModal-pel').classList.remove('show'); document.getElementById('success-pel').classList.add('show'); }
+function hideSuccessPel() { document.getElementById('success-pel').classList.remove('show'); goPel('home'); }
+
+function updateClock() {
+  var now=new Date(), h=now.getHours().toString().padStart(2,'0'), m=now.getMinutes().toString().padStart(2,'0'), s=h+':'+m;
+  document.getElementById('clock-ins').textContent=s;
+  document.getElementById('clock-pel').textContent=s;
+}
+updateClock(); setInterval(updateClock,10000);
+</script>
+</body>
+</html>
